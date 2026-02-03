@@ -42,8 +42,8 @@ export const DRAFT_ORDER_CREATE = `
 `;
 
 export const DRAFT_ORDER_COMPLETE = `
-  mutation DraftOrderComplete($id: ID!) {
-    draftOrderComplete(id: $id) {
+  mutation DraftOrderComplete($id: ID!, $paymentPending: Boolean) {
+    draftOrderComplete(id: $id, paymentPending: $paymentPending) {
       draftOrder {
         order {
           id

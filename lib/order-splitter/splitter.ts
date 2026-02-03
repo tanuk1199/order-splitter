@@ -175,9 +175,11 @@ export async function processOrderSplit(
   const [usComplete, nonUsComplete] = await Promise.all([
     adminGraphQL<DraftOrderCompleteResult>(DRAFT_ORDER_COMPLETE, {
       id: usDraft.draftOrderCreate.draftOrder!.id,
+      paymentPending: true,
     }),
     adminGraphQL<DraftOrderCompleteResult>(DRAFT_ORDER_COMPLETE, {
       id: nonUsDraft.draftOrderCreate.draftOrder!.id,
+      paymentPending: true,
     }),
   ]);
 
