@@ -12,9 +12,13 @@ export const CONFIG = {
   splitFromPrefix: "split-from-",
 
   shopDomain: process.env.SHOPIFY_STORE_DOMAIN!,
-  adminAccessToken: process.env.SHOPIFY_ADMIN_ACCESS_TOKEN!,
-  webhookSecret: process.env.SHOPIFY_WEBHOOK_SECRET!,
+  clientId: process.env.SHOPIFY_CLIENT_ID!,
+  clientSecret: process.env.SHOPIFY_CLIENT_SECRET!,
   apiVersion: process.env.SHOPIFY_API_VERSION ?? "2025-07",
 
   adminPassword: process.env.ADMIN_PASSWORD!,
+
+  /** OAuth scopes needed by the app */
+  scopes:
+    "read_orders,write_orders,read_products,write_draft_orders",
 } as const;

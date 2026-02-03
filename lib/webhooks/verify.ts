@@ -5,7 +5,7 @@ export function verifyShopifyWebhook(
   rawBody: string,
   hmacHeader: string
 ): boolean {
-  const digest = createHmac("sha256", CONFIG.webhookSecret)
+  const digest = createHmac("sha256", CONFIG.clientSecret)
     .update(rawBody, "utf8")
     .digest("base64");
 

@@ -1,6 +1,5 @@
 import { CONFIG } from "../config";
-
-const endpoint = `https://${CONFIG.shopDomain}/admin/api/${CONFIG.apiVersion}/graphql.json`;
+import { getAccessToken } from "./token-store";
 
 interface GraphQLResponse<T> {
   data?: T;
@@ -11,11 +10,14 @@ export async function adminGraphQL<T>(
   query: string,
   variables?: Record<string, unknown>
 ): Promise<T> {
+  const token = getAccessToken();
+  const endpoint = `https://${CONFIG.shopDomain}/admin/api/${CONFIG.apiVersion}/graphql.json`;
+
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Shopify-Access-Token": CONFIG.adminAccessToken,
+      "X-Shopify-Access-Token": token,
     },
     body: JSON.stringify({ query, variables }),
   });
