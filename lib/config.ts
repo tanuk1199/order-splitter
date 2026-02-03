@@ -20,5 +20,5 @@ export const CONFIG = {
 
   /** OAuth scopes needed by the app */
   scopes:
-    "read_orders,write_orders,read_products,write_draft_orders",
+    "read_orders,write_orders,read_products,write_draft_orders,read_customers",
 } as const;
