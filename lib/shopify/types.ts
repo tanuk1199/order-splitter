@@ -135,8 +135,8 @@ export interface UserError {
 
 export interface OrderCancelResult {
   orderCancel: {
-    order: { id: string; cancelledAt: string | null } | null;
-    userErrors: UserError[];
+    job: { id: string } | null;
+    orderCancelUserErrors: UserError[];
   };
 }
 

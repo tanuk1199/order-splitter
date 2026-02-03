@@ -15,11 +15,10 @@ export const ORDER_CANCEL = `
       staffNote: $staffNote
       refundMethod: $refundMethod
     ) {
-      order {
+      job {
         id
-        cancelledAt
       }
-      userErrors {
+      orderCancelUserErrors {
         field
         message
       }

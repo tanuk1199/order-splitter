@@ -122,8 +122,8 @@ export async function processOrderSplit(
     refundMethod: { originalPaymentMethodsRefund: false },
   });
 
-  if (cancelResult.orderCancel.userErrors.length > 0) {
-    const errors = cancelResult.orderCancel.userErrors
+  if (cancelResult.orderCancel.orderCancelUserErrors.length > 0) {
+    const errors = cancelResult.orderCancel.orderCancelUserErrors
       .map((e) => e.message)
       .join("; ");
     throw new Error(`Failed to cancel order: ${errors}`);
