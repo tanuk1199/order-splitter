@@ -17,8 +17,6 @@ import type {
   ShopifyLineItem,
 } from "../shopify/types";
 import { classifyLineItems, needsSplit } from "./classifier";
-import { splitShipping } from "./shipping";
-import { splitDiscount } from "./discounts";
 import { buildDraftOrderInput } from "./draft-order-builder";
 import { CONFIG } from "../config";
 import { log } from "../logger";
@@ -92,19 +90,18 @@ export async function processOrderSplit(
   const usSubtotal = calculateSubtotal(classified.usItems);
   const nonUsSubtotal = calculateSubtotal(classified.nonUsItems);
 
-  // 5. Split shipping (full on US, $0 on non-US)
-  const firstShippingLine = order.shippingLines.nodes[0];
-  const shippingAllocation = splitShipping(
-    firstShippingLine?.title ?? "Shipping",
-    firstShippingLine?.originalPriceSet.shopMoney.amount ?? "0"
-  );
+  // 5. Zero-out shipping on split orders (original order keeps the financial record)
+  const zeroShipping = { title: "Shipping", price: "0" };
 
-  // 6. Split discounts proportionally
-  const discountAllocation = splitDiscount(
-    order.totalDiscountsSet.shopMoney.amount,
-    usSubtotal,
-    nonUsSubtotal
-  );
+  // 6. Zero-out subtotals via discount (prevents double-counting revenue)
+  const usDiscount = {
+    value: usSubtotal,
+    title: `Split order — see original ${order.name}`,
+  };
+  const nonUsDiscount = {
+    value: nonUsSubtotal,
+    title: `Split order — see original ${order.name}`,
+  };
 
   // 7. Tag original order BEFORE cancelling (idempotency safety)
   await adminGraphQL<TagsAddResult>(TAGS_ADD, {
@@ -134,8 +131,8 @@ export async function processOrderSplit(
     order,
     lineItems: classified.usItems,
     label: "US",
-    shipping: shippingAllocation.usShipping,
-    discount: discountAllocation.usDiscount,
+    shipping: zeroShipping,
+    discount: usDiscount,
   });
 
   const usDraft = await adminGraphQL<DraftOrderCreateResult>(
@@ -155,8 +152,8 @@ export async function processOrderSplit(
     order,
     lineItems: classified.nonUsItems,
     label: "non-US",
-    shipping: shippingAllocation.nonUsShipping,
-    discount: discountAllocation.nonUsDiscount,
+    shipping: zeroShipping,
+    discount: nonUsDiscount,
   });
 
   const nonUsDraft = await adminGraphQL<DraftOrderCreateResult>(
