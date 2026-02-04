@@ -14,6 +14,7 @@ export const CONFIG = {
   shopDomain: process.env.SHOPIFY_STORE_DOMAIN!,
   clientId: process.env.SHOPIFY_CLIENT_ID!,
   clientSecret: process.env.SHOPIFY_CLIENT_SECRET!,
+  webhookSecret: process.env.SHOPIFY_WEBHOOK_SECRET!,
   apiVersion: process.env.SHOPIFY_API_VERSION ?? "2025-07",
 
   adminPassword: process.env.ADMIN_PASSWORD!,
