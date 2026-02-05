@@ -197,7 +197,23 @@ export async function processOrderSplit(
   const usOrder = usComplete.draftOrderComplete.draftOrder!.order!;
   const nonUsOrder = nonUsComplete.draftOrderComplete.draftOrder!.order!;
 
-  // 12. Store mapping on original order as metafield
+  // 12. Restore customer email on both orders (omitted during draft creation to suppress notifications)
+  if (order.email) {
+    await Promise.all([
+      adminGraphQL<OrderUpdateResult>(ORDER_UPDATE, {
+        input: { id: usOrder.id, email: order.email },
+      }),
+      adminGraphQL<OrderUpdateResult>(ORDER_UPDATE, {
+        input: { id: nonUsOrder.id, email: order.email },
+      }),
+    ]).catch((err) => {
+      log("warn", "Failed to restore email on split orders", {
+        error: err instanceof Error ? err.message : String(err),
+      });
+    });
+  }
+
+  // 13. Store mapping on original order as metafield
   try {
     await adminGraphQL<OrderUpdateResult>(ORDER_UPDATE, {
       input: {

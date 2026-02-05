@@ -21,7 +21,8 @@ export function buildDraftOrderInput(params: BuildParams): DraftOrderInput {
 
   const input: DraftOrderInput = {
     customerId: order.customer?.id,
-    email: order.email,
+    // Omit email to prevent Shopify sending order confirmation notifications.
+    // Email is restored on the completed order via orderUpdate.
     note: [
       `Split order (${label} items) from original order ${order.name}.`,
       order.note ?? "",
